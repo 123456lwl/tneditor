@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#1a1a2e">
+  <title>游戏数据编辑器</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app">
+    <!-- 顶部导航 -->
+    <header class="header">
+      <h1>🎮 游戏数据编辑器</h1>
+      <div class="header-actions">
+        <button id="btn-export" title="导出数据">📤</button>
+        <button id="btn-import" title="导入数据">📥</button>
+      </div>
+    </header>
+
+    <!-- 分类标签 -->
+    <nav class="tabs">
+      <button class="tab active" data-tab="story">📖 剧情</button>
+      <button class="tab" data-tab="equipment">⚔️ 装备</button>
+      <button class="tab" data-tab="character">👤 角色</button>
+      <button class="tab" data-tab="notes">📝 笔记</button>
+    </nav>
+
+    <!-- 内容区域 -->
+    <main class="content">
+      <!-- 工具栏 -->
+      <div class="toolbar">
+        <button id="btn-add" class="btn-primary">+ 新建</button>
+        <button id="btn-random" class="btn-secondary">🎲 随机生成</button>
+        <button id="btn-random-affix" class="btn-secondary hidden">🔮 随机词条</button>
+        <button id="btn-random-set" class="btn-secondary hidden">🛡️ 随机套装</button>
+        <button id="btn-ai-story" class="btn-secondary hidden">🤖 AI剧情</button>
+        <input type="text" id="search-input" placeholder="搜索..." class="search-input">
+      </div>
+
+      <!-- 列表视图 -->
+      <div id="list-view" class="list-view"></div>
+
+      <!-- 编辑视图 -->
+      <div id="edit-view" class="edit-view hidden">
+        <div class="edit-header">
+          <button id="btn-back" class="btn-back">← 返回</button>
+          <button id="btn-save" class="btn-primary">保存</button>
+          <button id="btn-delete" class="btn-danger">删除</button>
+        </div>
+        <div id="edit-form" class="edit-form"></div>
+      </div>
+
+      <!-- 套装展示视图 -->
+      <div id="set-view" class="set-view hidden">
+        <div class="edit-header">
+          <button id="btn-set-back" class="btn-back">← 返回</button>
+          <button id="btn-set-save" class="btn-primary">保存全部到装备</button>
+        </div>
+        <div id="set-content"></div>
+      </div>
+
+      <!-- AI 剧情对话框 -->
+      <div id="ai-modal" class="modal hidden">
+        <div class="modal-content">
+          <div class="modal-header">
+            <span>🤖 AI 剧情生成</span>
+            <button id="btn-ai-close" class="btn-back">✕</button>
+          </div>
+          <div class="form-group">
+            <label>API Key（支持 OpenAI 兼容接口）</label>
+            <input type="password" id="ai-api-key" placeholder="sk-...">
+          </div>
+          <div class="form-group">
+            <label>API 地址（可选，默认 OpenAI）</label>
+            <input type="text" id="ai-api-url" placeholder="https://api.openai.com/v1/chat/completions">
+          </div>
+          <div class="form-group">
+            <label>模型名称</label>
+            <input type="text" id="ai-model" placeholder="gpt-3.5-turbo">
+          </div>
+          <div class="form-group">
+            <label>剧情提示词（描述你想要的剧情方向）</label>
+            <textarea id="ai-prompt" placeholder="例如：一个关于勇者在冰封雪原寻找远古神器的冒险故事，包含反转和悬念..."></textarea>
+          </div>
+          <button id="btn-ai-generate" class="btn-primary" style="width:100%">✨ 生成剧情</button>
+          <div id="ai-loading" class="hidden" style="text-align:center;padding:16px;color:var(--text-secondary)">
+            ⏳ AI 正在创作中...
+          </div>
+          <div id="ai-result" class="hidden">
+            <div class="form-group">
+              <label>生成结果</label>
+              <textarea id="ai-result-text" style="min-height:200px" readonly></textarea>
+            </div>
+            <button id="btn-ai-save" class="btn-primary" style="width:100%">💾 保存为剧情</button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- 导入文件隐藏input -->
+  <input type="file" id="file-import" accept=".json" style="display:none">
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('./sw.js');
+    }
+  </script>
+  <script src="data-templates.js"></script>
+  <script src="storage.js"></script>
+  <script src="generator.js"></script>
+  <script src="ai.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
